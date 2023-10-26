@@ -53,7 +53,7 @@ contract MultiSigTA {
     event fundsTransfered(string ticker, address sender, address receiver, uint amount, uint id, uint approvals, uint timeOfTransaction);
     event tokenAdded(address addedBy, string ticker, address tokenAddress, uint timeOfTransaction);
     
-    modifier onlyowners() {
+    modifier onlyOwners() {
        bool isOwner = false;
        for (uint i = 0; i< walletowners.length; i++) {
            if (walletowners[i] == msg.sender) {
@@ -72,7 +72,7 @@ contract MultiSigTA {
         _;
     }
     
-    function addToken(string memory ticker, address _tokenAddress) public onlyowners {
+    function addToken(string memory ticker, address _tokenAddress) public onlyOwners {
         for (uint i = 0; i < tokenList.length; i++) {
             require(keccak256(bytes(tokenList[i])) != keccak256(bytes(ticker)), "cannot add duplicate tokens");
         }
@@ -82,7 +82,7 @@ contract MultiSigTA {
         emit tokenAdded(msg.sender, ticker, _tokenAddress, block.timestamp);
     }
         
-    function addWalletOwner(address owner) public onlyowners {
+    function addWalletOwner(address owner) public onlyOwners {
        for (uint i = 0; i < walletowners.length; i++) {
            if(walletowners[i] == owner) {
                revert("cannot add duplicate owners");
@@ -93,7 +93,7 @@ contract MultiSigTA {
         emit walletOwnerAdded(msg.sender, owner, block.timestamp);
     }
     
-    function removeWalletOwner(address owner) public onlyowners {
+    function removeWalletOwner(address owner) public onlyOwners {
         
         bool hasBeenFound = false;
         uint ownerIndex;
@@ -111,7 +111,7 @@ contract MultiSigTA {
         emit walletOwnerRemoved(msg.sender, owner, block.timestamp);
     }
     
-    function deposit(string memory ticker, uint amount) public payable onlyowners {
+    function deposit(string memory ticker, uint amount) public payable onlyOwners {
         require(balance[msg.sender][ticker] >= 0, "cannot deposit a value of 0");
         if(keccak256(bytes(ticker)) == keccak256(bytes("ETH"))) {
             balance[msg.sender]["ETH"] += msg.value;
@@ -124,7 +124,7 @@ contract MultiSigTA {
         depositId++;
     } 
     
-    function withdraw(string memory ticker, uint amount) public onlyowners {
+    function withdraw(string memory ticker, uint amount) public onlyOwners {
         require(balance[msg.sender][ticker] >= amount,"insuffient balance");
         balance[msg.sender][ticker] -= amount;
         if(keccak256(bytes(ticker)) == keccak256(bytes("ETH"))) {
@@ -137,7 +137,7 @@ contract MultiSigTA {
         withdrawalId++;
     }
     // NOTE : TokenExiz Hndle
-    function createTransferRequest(string memory ticker, address payable receiver, uint amount) public onlyowners tokenExists(ticker){
+    function createTransferRequest(string memory ticker, address payable receiver, uint amount) public onlyOwners tokenExists(ticker){
         require(balance[msg.sender][ticker] >= amount, "insufficent funds to create a transfer");
         for (uint i = 0; i < walletowners.length; i++) {
             require(walletowners[i] != receiver, "cannot transfer funds within the wallet");
@@ -148,7 +148,7 @@ contract MultiSigTA {
         emit transferCreated(ticker, msg.sender, receiver, amount, transferId, 0, block.timestamp);
     }
     
-    function cancelTransferRequest( string memory ticker, uint id) public onlyowners {
+    function cancelTransferRequest( string memory ticker, uint id) public onlyOwners {
         // string memory ticker = transferRequests[id].ticker;
         bool hasBeenFound = false;
         uint transferIndex = 0;
@@ -169,7 +169,7 @@ contract MultiSigTA {
         transferRequests.pop();
     }
     
-    function approveTransferRequest( string memory ticker, uint id) public onlyowners {
+    function approveTransferRequest( string memory ticker, uint id) public onlyOwners {
         
         // string memory ticker = transferRequests[id].ticker;
         bool hasBeenFound = false;
@@ -213,7 +213,7 @@ contract MultiSigTA {
         return approvals[msg.sender][id];
     }
     
-    function getTransferRequests() public onlyowners view returns(Transfer[] memory) {
+    function getTransferRequests() public onlyOwners view returns(Transfer[] memory) {
         return transferRequests;
     }
     
@@ -229,7 +229,7 @@ contract MultiSigTA {
         return address(this).balance;
     }
     
-    function getWalletOners() public view returns(address[] memory) {
+    function getWalletOwners() public view returns(address[] memory) {
         return walletowners;
     }
    

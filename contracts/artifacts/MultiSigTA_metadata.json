@@ -598,7 +598,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "getWalletOners",
+				"name": "getWalletOwners",
 				"outputs": [
 					{
 						"internalType": "address[]",
@@ -669,11 +669,11 @@
 	},
 	"sources": {
 		"contracts/Multisig.sol": {
-			"keccak256": "0xb5b1315d0a53e3dc5cc74b9d038ee8cef46c19f8a5a72c3ea2b97058043f176e",
+			"keccak256": "0x7890accf841c6eda4878626e952d5b837fda6d4c907dced2c3ab3c50b0e14599",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://3c81b297049dc3230330272f01b8762194e0eb7028c13ca93f0fccef0640b314",
-				"dweb:/ipfs/QmY9kMdMZezB65hEjnamGApGokR5QZuCrYi6SV2FVMnjYr"
+				"bzz-raw://9132f95b5331b7e7506d7a0c7c8dfa81ce93a5dfa8da444d30a90761c95689fa",
+				"dweb:/ipfs/QmZ5tb8uY4XbJ8q3ySywhkLDyZhgo1Mn989hE53VsypA7S"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/interfaces/draft-IERC6093.sol": {
