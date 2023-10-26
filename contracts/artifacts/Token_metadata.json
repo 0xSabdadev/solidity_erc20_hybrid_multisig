@@ -455,11 +455,11 @@
 	},
 	"sources": {
 		"contracts/Token.sol": {
-			"keccak256": "0xfead14289bde12a444e902f6bf3851e41f3e3fc6cf8435efcdac592a24278d10",
+			"keccak256": "0x25ab1db215a7023a7318b7a6b5884727e4d1a91bf232a5424adc409ef53b9f57",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://bc8a6e986da766733b1fc94f0d3df7d257715554e7aa6ee4b3df5d67c62828a2",
-				"dweb:/ipfs/QmNRKHePgmzPdYH6MJYLn7eiqsP2t3R5EqWAEUTi4dVVpy"
+				"bzz-raw://e07d845359a28cba89067237db336858bb0a01cf870bbc9032b29b75aa61e284",
+				"dweb:/ipfs/QmVDPREGYCXa5fneaoLtxcnUYzcr4wkACvAi8MnGw3yYMN"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/interfaces/draft-IERC6093.sol": {

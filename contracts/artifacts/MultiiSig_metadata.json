@@ -395,11 +395,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "string",
-						"name": "ticker",
-						"type": "string"
-					},
-					{
 						"internalType": "uint256",
 						"name": "id",
 						"type": "uint256"
@@ -412,11 +407,6 @@
 			},
 			{
 				"inputs": [
-					{
-						"internalType": "string",
-						"name": "ticker",
-						"type": "string"
-					},
 					{
 						"internalType": "uint256",
 						"name": "id",
@@ -446,7 +436,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "createTransferRequest",
+				"name": "createTrnasferRequest",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -656,11 +646,11 @@
 	},
 	"sources": {
 		"contracts/Multisig.sol": {
-			"keccak256": "0x1ca89c08145cea5bd088492e331eb73c735b7ab4e7ec30315c3e8675a1f0bf4f",
+			"keccak256": "0x54f9f0d8b6b9170fcd9b2b8f27f8330c1e6b3b556831f7c7289cfe66fc0d09a5",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://9ea7f02157dc3222ea85fa116123a297b167dc75de1a45b287335b52837fab17",
-				"dweb:/ipfs/QmYvHhqfDmkM3Qz2mniNuMyz7RntSnPn9SvFH3vFzyr5dN"
+				"bzz-raw://7f19b2c4d03862d21d92804011f83393664abed54ed0aea5bea37b2bf908311f",
+				"dweb:/ipfs/QmR88GDNucCf4o1Cwy9TCSooTNChZQu8CdQytKjgsUF7yS"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/interfaces/draft-IERC6093.sol": {
