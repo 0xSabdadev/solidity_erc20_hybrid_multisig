@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity 0.8.7;
+pragma solidity ^0.8.20;
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
 
@@ -28,11 +28,11 @@ contract MultiiSig {
     mapping(string => Token) tokenMapping;
     
     struct Token{
-        bytes32 ticker;
+        string ticker;
         address tokenAddress;
     }
     struct Transfer {
-        
+        string  ticker;
         address sender;
         address payable receiver;
         uint amount;
@@ -47,11 +47,11 @@ contract MultiiSig {
     event walletOwnerRemoved(address removedBy, address ownerRemoved, uint timeOfTransaction);
     event fundsDeposited(string ticker, address sender, uint amount, uint depositId, uint timeOfTransaction);
     event fundsWithdrawed(string ticker, address sender, uint amount, uint withdrawalId, uint timeOfTransaction);
-    event transferCreated(address sender, address receiver, uint amount, uint id, uint approvals, uint timeOfTransaction);
-    event transferCancelled(address sender, address receiver, uint amount, uint id, uint approvals, uint timeOfTransaction);
-    event transferApproved(address sender, address receiver, uint amount, uint id, uint approvals, uint timeOfTransaction);
-    event fundsTransfered(address sender, address receiver, uint amount, uint id, uint approvals, uint timeOfTransaction);
-    event tokenAddress(address addedBy, string ticker, address tokenAddress, uint timeOfTransaction);
+    event transferCreated(string ticker, address sender, address receiver, uint amount, uint id, uint approvals, uint timeOfTransaction);
+    event transferCancelled(string ticker, address sender, address receiver, uint amount, uint id, uint approvals, uint timeOfTransaction);
+    event transferApproved(string ticker, address sender, address receiver, uint amount, uint id, uint approvals, uint timeOfTransaction);
+    event fundsTransfered(string ticker, address sender, address receiver, uint amount, uint id, uint approvals, uint timeOfTransaction);
+    event tokenAdded(address addedBy, string ticker, address tokenAddress, uint timeOfTransaction);
     
     modifier onlyowners() {
         
@@ -75,14 +75,14 @@ contract MultiiSig {
         _;
     }
 
-    function addToken(string memory ticker, address _tokenAddress) public onlyowners tokenExist(ticker){
+    function addToken(string memory ticker, address _tokenAddress) public onlyowners {
         for(uint i = 0;i<tokenList.length;i++){
             require(keccak256(bytes(tokenList[i])) != keccak256(bytes(ticker)), 'cannot add tokens' );
         }
         require(keccak256(bytes(ERC20(_tokenAddress).symbol())) == keccak256(bytes(ticker)));
         tokenMapping[ticker] = Token(ticker,_tokenAddress);
         tokenList.push(ticker);
-        emit tokenAdded(msg.sender,ticker,_tokenAdress, block.timestamp);
+        emit tokenAdded(msg.sender,ticker,_tokenAddress, block.timestamp);
     }
 
     function getWalletOners() public view returns(address[] memory) {
@@ -132,54 +132,55 @@ contract MultiiSig {
        
     }
     
-    function deposit(string memory ticker, uint amount) public payable onlyowners tokenExist(ticker) {
+    function deposit(string memory ticker, uint amount) public payable onlyowners {
         
         require(balance[msg.sender][ticker] >= 0, "cannot deposit a value of 0");
         
         if(keccak256(bytes(ticker)) == keccak256(bytes('ETH'))){
-            balance[msg.sender]["ETH"] =+ msg.value; //thiz
-            emit fundsDeposited("ETH",msg.sender, msg.value, depositId, block.timestamp);
+            balance[msg.sender]["ETH"] += msg.value; //thiz
         }else{
+            require(tokenMapping[ticker].tokenAddress != address(0),"token didnt exist");
+            balance[msg.sender][ticker] += msg.value; //thiz
             IERC20(tokenMapping[ticker].tokenAddress).transferFrom(msg.sender,address(this),amount);
-            emit fundsDeposited(ticker,msg.sender, msg.value, depositId, block.timestamp);
         }
+
+        emit fundsDeposited(ticker,msg.sender, msg.value, depositId, block.timestamp);
         depositId++;
-        
     } 
     
-    function withdraw(string memory ticker, uint amount) public onlyowners tokenExist(ticker){
+    function withdraw(string memory ticker, uint amount) public onlyowners {
         
         require(balance[msg.sender][ticker] >= amount, "cannot withdraw amount higher than balance");
         
-        balance[msg.sender][ticker] -= amount;
+        balance[msg.sender][ticker] -= amount; //thiz
         if(keccak256(bytes(ticker)) == keccak256(bytes('ETH'))){
             payable(msg.sender).transfer(amount);
-            emit fundsWithdrawed("ETH",msg.sender, msg.value, depositId, block.timestamp);
         }else{
+            require(tokenMapping[ticker].tokenAddress != address(0),"token didnt exist");
             IERC20(tokenMapping[ticker].tokenAddress).transfer(msg.sender,amount);
-            emit fundsWithdrawed(ticker,msg.sender, msg.value, depositId, block.timestamp);
         }
         
+        emit fundsWithdrawed(ticker,msg.sender, amount, depositId, block.timestamp);
         withdrawalId++;
         
     }
     
-    function createTrnasferRequest(address payable receiver, uint amount) public onlyowners {
+    function createTransferRequest(string memory ticker, address payable receiver, uint amount) public onlyowners {
         
-        require(balance[msg.sender] >= amount, "insufficent funds to create a transfer");
+        require(balance[msg.sender][ticker] >= amount, "insufficent funds to create a transfer");
         
         for (uint i = 0; i < walletowners.length; i++) {
             
             require(walletowners[i] != receiver, "cannot transfer funds withiwn the wallet");
         }
         
-        balance[msg.sender] -= amount;
-        transferRequests.push(Transfer(msg.sender, receiver, amount, transferId, 0, block.timestamp));
+        balance[msg.sender][ticker] -= amount;
+        transferRequests.push(Transfer(ticker, msg.sender, receiver, amount, transferId, 0, block.timestamp));
         transferId++;
-        emit transferCreated(msg.sender, receiver, amount, transferId, 0, block.timestamp);
+        emit transferCreated(ticker, msg.sender, receiver, amount, transferId, 0, block.timestamp);
     }
     
-    function cancelTransferRequest(uint id) public onlyowners {
+    function cancelTransferRequest(string memory ticker, uint id) public onlyowners {
         
         bool hasBeenFound = false;
         uint transferIndex = 0;
@@ -198,15 +199,15 @@ contract MultiiSig {
         require(transferRequests[transferIndex].sender == msg.sender, "only the transfer creator can cancel");
         require(hasBeenFound, "transfer request does not exist");
         
-        balance[msg.sender] += transferRequests[transferIndex].amount;
+        balance[msg.sender][ticker] += transferRequests[transferIndex].amount;
         
         transferRequests[transferIndex] = transferRequests[transferRequests.length - 1];
         
-        emit transferCancelled(msg.sender, transferRequests[transferIndex].receiver, transferRequests[transferIndex].amount, transferRequests[transferIndex].id, transferRequests[transferIndex].approvals, transferRequests[transferIndex].timeOfTransaction);
+        emit transferCancelled(ticker, msg.sender, transferRequests[transferIndex].receiver, transferRequests[transferIndex].amount, transferRequests[transferIndex].id, transferRequests[transferIndex].approvals, transferRequests[transferIndex].timeOfTransaction);
         transferRequests.pop();
     }
     
-    function approveTransferRequest(uint id) public onlyowners {
+    function approveTransferRequest(string memory ticker, uint id) public onlyowners {
         
         bool hasBeenFound = false;
         uint transferIndex = 0;
@@ -224,25 +225,32 @@ contract MultiiSig {
         
         require(hasBeenFound, "only the transfer creator can cancel");
         require(approvals[msg.sender][id] == false, "cannot approve the same transfer twice");
-        require(transferRequests[transferIndex].sender != msg.sender);
+        require(transferRequests[transferIndex].sender != msg.sender, "only receiver can approve transaction");
         
         approvals[msg.sender][id] = true;
         transferRequests[transferIndex].approvals++;
         
-        emit transferApproved(msg.sender, transferRequests[transferIndex].receiver, transferRequests[transferIndex].amount, transferRequests[transferIndex].id, transferRequests[transferIndex].approvals, transferRequests[transferIndex].timeOfTransaction);
+        emit transferApproved(ticker, msg.sender, transferRequests[transferIndex].receiver, transferRequests[transferIndex].amount, transferRequests[transferIndex].id, transferRequests[transferIndex].approvals, transferRequests[transferIndex].timeOfTransaction);
         
         if (transferRequests[transferIndex].approvals == limit) {
             
-            transferFunds(transferIndex);
+            transferFunds(ticker, transferIndex);
         }
     }
     
-    function transferFunds(uint id) private {
+    function transferFunds(string memory ticker, uint id) private {
         
-        balance[transferRequests[id].receiver] += transferRequests[id].amount;
-        transferRequests[id].receiver.transfer(transferRequests[id].amount);
+        balance[transferRequests[id].receiver][ticker] += transferRequests[id].amount;
+
+        if(keccak256(bytes(ticker)) == keccak256(bytes('ETH'))){
+            transferRequests[id].receiver.transfer(transferRequests[id].amount);
+        }else{
+            require(tokenMapping[ticker].tokenAddress != address(0),"token didnt exist");
+            IERC20(tokenMapping[ticker].tokenAddress).transfer(transferRequests[id].receiver,transferRequests[id].amount);
+        }
         
-        emit fundsTransfered(msg.sender, transferRequests[id].receiver, transferRequests[id].amount, transferRequests[id].id, transferRequests[id].approvals, transferRequests[id].timeOfTransaction);
+        
+        emit fundsTransfered(ticker, msg.sender, transferRequests[id].receiver, transferRequests[id].amount, transferRequests[id].id, transferRequests[id].approvals, transferRequests[id].timeOfTransaction);
         
         transferRequests[id] = transferRequests[transferRequests.length - 1];
         transferRequests.pop();
@@ -258,9 +266,9 @@ contract MultiiSig {
         return transferRequests;
     }
     
-    function getBalance() public view returns(uint) {
+    function getBalance(string memory ticker) public view returns(uint) {
         
-        return balance[msg.sender];
+        return balance[msg.sender][ticker];
     }
     
     function getApprovalLimit() public view returns (uint) {

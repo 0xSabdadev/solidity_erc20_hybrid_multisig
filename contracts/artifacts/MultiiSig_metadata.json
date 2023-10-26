@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.7+commit.e28d00a7"
+		"version": "0.8.22+commit.4fc1097e"
 	},
 	"language": "Solidity",
 	"output": {
@@ -13,6 +13,12 @@
 			{
 				"anonymous": false,
 				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "ticker",
+						"type": "string"
+					},
 					{
 						"indexed": false,
 						"internalType": "address",
@@ -44,6 +50,12 @@
 			{
 				"anonymous": false,
 				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "ticker",
+						"type": "string"
+					},
 					{
 						"indexed": false,
 						"internalType": "address",
@@ -89,6 +101,12 @@
 				"inputs": [
 					{
 						"indexed": false,
+						"internalType": "string",
+						"name": "ticker",
+						"type": "string"
+					},
+					{
+						"indexed": false,
 						"internalType": "address",
 						"name": "sender",
 						"type": "address"
@@ -118,6 +136,43 @@
 			{
 				"anonymous": false,
 				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "addedBy",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "ticker",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "tokenAddress",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "timeOfTransaction",
+						"type": "uint256"
+					}
+				],
+				"name": "tokenAdded",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "ticker",
+						"type": "string"
+					},
 					{
 						"indexed": false,
 						"internalType": "address",
@@ -163,6 +218,12 @@
 				"inputs": [
 					{
 						"indexed": false,
+						"internalType": "string",
+						"name": "ticker",
+						"type": "string"
+					},
+					{
+						"indexed": false,
 						"internalType": "address",
 						"name": "sender",
 						"type": "address"
@@ -204,6 +265,12 @@
 			{
 				"anonymous": false,
 				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "ticker",
+						"type": "string"
+					},
 					{
 						"indexed": false,
 						"internalType": "address",
@@ -297,6 +364,24 @@
 			{
 				"inputs": [
 					{
+						"internalType": "string",
+						"name": "ticker",
+						"type": "string"
+					},
+					{
+						"internalType": "address",
+						"name": "_tokenAddress",
+						"type": "address"
+					}
+				],
+				"name": "addToken",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "owner",
 						"type": "address"
@@ -309,6 +394,11 @@
 			},
 			{
 				"inputs": [
+					{
+						"internalType": "string",
+						"name": "ticker",
+						"type": "string"
+					},
 					{
 						"internalType": "uint256",
 						"name": "id",
@@ -323,6 +413,11 @@
 			{
 				"inputs": [
 					{
+						"internalType": "string",
+						"name": "ticker",
+						"type": "string"
+					},
+					{
 						"internalType": "uint256",
 						"name": "id",
 						"type": "uint256"
@@ -336,6 +431,11 @@
 			{
 				"inputs": [
 					{
+						"internalType": "string",
+						"name": "ticker",
+						"type": "string"
+					},
+					{
 						"internalType": "address payable",
 						"name": "receiver",
 						"type": "address"
@@ -346,13 +446,24 @@
 						"type": "uint256"
 					}
 				],
-				"name": "createTrnasferRequest",
+				"name": "createTransferRequest",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "ticker",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
 				"name": "deposit",
 				"outputs": [],
 				"stateMutability": "payable",
@@ -391,7 +502,13 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "ticker",
+						"type": "string"
+					}
+				],
 				"name": "getBalance",
 				"outputs": [
 					{
@@ -422,6 +539,11 @@
 				"outputs": [
 					{
 						"components": [
+							{
+								"internalType": "string",
+								"name": "ticker",
+								"type": "string"
+							},
 							{
 								"internalType": "address",
 								"name": "sender",
@@ -490,6 +612,11 @@
 			{
 				"inputs": [
 					{
+						"internalType": "string",
+						"name": "ticker",
+						"type": "string"
+					},
+					{
 						"internalType": "uint256",
 						"name": "amount",
 						"type": "uint256"
@@ -516,7 +643,7 @@
 		"compilationTarget": {
 			"contracts/Multisig.sol": "MultiiSig"
 		},
-		"evmVersion": "london",
+		"evmVersion": "shanghai",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -529,11 +656,51 @@
 	},
 	"sources": {
 		"contracts/Multisig.sol": {
-			"keccak256": "0xf27a359dc8a565141f2764403619a22f008f5d61ca315c3713e418986b2514a2",
+			"keccak256": "0x1ca89c08145cea5bd088492e331eb73c735b7ab4e7ec30315c3e8675a1f0bf4f",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://f26fb1c78fca94c6a726dd2f3f17f52047b8d11f56f53aa5dd7bce0bf021bc53",
-				"dweb:/ipfs/QmeDcwCf2K7EUR36eL15zRAGMrt9JBsSZxiGUdpareNK6Q"
+				"bzz-raw://9ea7f02157dc3222ea85fa116123a297b167dc75de1a45b287335b52837fab17",
+				"dweb:/ipfs/QmYvHhqfDmkM3Qz2mniNuMyz7RntSnPn9SvFH3vFzyr5dN"
+			]
+		},
+		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/interfaces/draft-IERC6093.sol": {
+			"keccak256": "0x60c65f701957fdd6faea1acb0bb45825791d473693ed9ecb34726fdfaa849dd7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ea290300e0efc4d901244949dc4d877fd46e6c5e43dc2b26620e8efab3ab803f",
+				"dweb:/ipfs/QmcLLJppxKeJWqHxE2CUkcfhuRTgHSn8J4kijcLa5MYhSt"
+			]
+		},
+		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol": {
+			"keccak256": "0xc3e1fa9d1987f8d349dfb4d6fe93bf2ca014b52ba335cfac30bfe71e357e6f80",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c5703ccdeb7b1d685e375ed719117e9edf2ab4bc544f24f23b0d50ec82257229",
+				"dweb:/ipfs/QmTdwkbQq7owpCiyuzE7eh5LrD2ddrBCZ5WHVsWPi1RrTS"
+			]
+		},
+		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol": {
+			"keccak256": "0xc6a8ff0ea489379b61faa647490411b80102578440ab9d84e9a957cc12164e70",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0ea104e577e63faea3b69c415637e99e755dcbf64c5833d7140c35a714d6d90c",
+				"dweb:/ipfs/Qmau6x4Ns9XdyynRCNNp3RhLqijJjFm7z5fyZazfYFGYdq"
+			]
+		},
+		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
+			"keccak256": "0xaa761817f6cd7892fcf158b3c776b34551cde36f48ff9703d53898bc45a94ea2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0ad7c8d4d08938c8dfc43d75a148863fb324b80cf53e0a36f7e5a4ac29008850",
+				"dweb:/ipfs/QmcrhfPgVNf5mkdhQvy1pMv51TFokD3Y4Wa5WZhFqVh8UV"
+			]
+		},
+		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Context.sol": {
+			"keccak256": "0x75a4ee64c68dbd5f38bddd06e664a64c8271b4caa554fb6f0607dfd672bb4bf3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0c4e6cb30d3601e2f7af5af09e265508147cb275a8dcd99d6f7363645cc56867",
+				"dweb:/ipfs/QmNgFkoXNWoUbAyw71rr1sKQ95Rj2GfvYiWg79xEYDn2NY"
 			]
 		}
 	},
