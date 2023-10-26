@@ -535,6 +535,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "getTokenList",
+				"outputs": [
+					{
+						"internalType": "string[]",
+						"name": "",
+						"type": "string[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "getTransferRequests",
 				"outputs": [
 					{
@@ -656,11 +669,11 @@
 	},
 	"sources": {
 		"contracts/Multisig.sol": {
-			"keccak256": "0xb918290fc9c89adf4541aab1b11bb37d54790abc01a2c43f75ee24a756ff839c",
+			"keccak256": "0xb5b1315d0a53e3dc5cc74b9d038ee8cef46c19f8a5a72c3ea2b97058043f176e",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://bd98719af5d45bb08463320d7015daec50631cd13ec7711f0cda7014581b21cb",
-				"dweb:/ipfs/QmQDECEH7Aq3DYWYMgUaLZXydVnvxWwBk67iGMipRJ2vgg"
+				"bzz-raw://3c81b297049dc3230330272f01b8762194e0eb7028c13ca93f0fccef0640b314",
+				"dweb:/ipfs/QmY9kMdMZezB65hEjnamGApGokR5QZuCrYi6SV2FVMnjYr"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/interfaces/draft-IERC6093.sol": {

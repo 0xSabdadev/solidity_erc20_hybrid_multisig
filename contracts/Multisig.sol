@@ -233,6 +233,9 @@ contract MultiSigTA {
         return walletowners;
     }
    
+    function getTokenList() public view returns(string[] memory){
+        return tokenList;
+    }
     
     
 }
