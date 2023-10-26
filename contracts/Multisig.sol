@@ -45,8 +45,8 @@ contract MultiiSig {
     
     event walletOwnerAdded(address addedBy, address ownerAdded, uint timeOfTransaction);
     event walletOwnerRemoved(address removedBy, address ownerRemoved, uint timeOfTransaction);
-    event fundsDeposited(address sender, uint amount, uint depositId, uint timeOfTransaction);
-    event fundsWithdrawed(address sender, uint amount, uint withdrawalId, uint timeOfTransaction);
+    event fundsDeposited(string ticker, address sender, uint amount, uint depositId, uint timeOfTransaction);
+    event fundsWithdrawed(string ticker, address sender, uint amount, uint withdrawalId, uint timeOfTransaction);
     event transferCreated(address sender, address receiver, uint amount, uint id, uint approvals, uint timeOfTransaction);
     event transferCancelled(address sender, address receiver, uint amount, uint id, uint approvals, uint timeOfTransaction);
     event transferApproved(address sender, address receiver, uint amount, uint id, uint approvals, uint timeOfTransaction);
@@ -132,27 +132,35 @@ contract MultiiSig {
        
     }
     
-    function deposit() public payable onlyowners {
+    function deposit(string memory ticker, uint amount) public payable onlyowners tokenExist(ticker) {
         
-        require(balance[msg.sender] >= 0, "cannot deposiit a calue of 0");
+        require(balance[msg.sender][ticker] >= 0, "cannot deposit a value of 0");
         
-        balance[msg.sender] = msg.value;
-        
-        emit fundsDeposited(msg.sender, msg.value, depositId, block.timestamp);
+        if(keccak256(bytes(ticker)) == keccak256(bytes('ETH'))){
+            balance[msg.sender]["ETH"] =+ msg.value; //thiz
+            emit fundsDeposited("ETH",msg.sender, msg.value, depositId, block.timestamp);
+        }else{
+            IERC20(tokenMapping[ticker].tokenAddress).transferFrom(msg.sender,address(this),amount);
+            emit fundsDeposited(ticker,msg.sender, msg.value, depositId, block.timestamp);
+        }
         depositId++;
         
     } 
     
-    function withdraw(uint amount) public onlyowners {
+    function withdraw(string memory ticker, uint amount) public onlyowners tokenExist(ticker){
         
-        require(balance[msg.sender] >= amount);
+        require(balance[msg.sender][ticker] >= amount, "cannot withdraw amount higher than balance");
         
-        balance[msg.sender] -= amount;
+        balance[msg.sender][ticker] -= amount;
+        if(keccak256(bytes(ticker)) == keccak256(bytes('ETH'))){
+            payable(msg.sender).transfer(amount);
+            emit fundsWithdrawed("ETH",msg.sender, msg.value, depositId, block.timestamp);
+        }else{
+            IERC20(tokenMapping[ticker].tokenAddress).transfer(msg.sender,amount);
+            emit fundsWithdrawed(ticker,msg.sender, msg.value, depositId, block.timestamp);
+        }
         
-        payable(msg.sender).transfer(amount);
-        
-        emit fundsWithdrawed(msg.sender, amount, withdrawalId, block.timestamp);
-         withdrawalId++;
+        withdrawalId++;
         
     }
     
