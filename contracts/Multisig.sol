@@ -8,6 +8,7 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 contract MultiSigTA {
     
     address mainOwner;
+    address multisigIntance;
     address[] walletowners;
     uint limit;  
     uint depositId = 0;
@@ -82,7 +83,21 @@ contract MultiSigTA {
         emit tokenAdded(msg.sender, ticker, _tokenAddress, block.timestamp);
     }
         
-    function addWalletOwner(address owner) public onlyOwners {
+    function setMultisigContractAdress(address walletAddress) private {
+        multisigIntance = walletAddress;
+    }
+
+    function callAddOwner(address owner, address multiSigContractInstance) private {
+        MultiSigFactory factory = MultiSigFactory(multisigIntance);
+        factory.addNewWalletInstance(owner, multiSigContractInstance);
+    }
+    
+    function callRemoveOwner(address owner, address multiSigContractInstance) private {
+        MultiSigFactory factory = MultiSigFactory(multisigIntance);
+        factory.removeNewWalletInstance(owner, multiSigContractInstance);
+    }
+
+    function addWalletOwner(address owner, address walletAddress, address _address) public onlyOwners {
        for (uint i = 0; i < walletowners.length; i++) {
            if(walletowners[i] == owner) {
                revert("cannot add duplicate owners");
@@ -91,9 +106,11 @@ contract MultiSigTA {
         walletowners.push(owner);
         limit = walletowners.length - 1;
         emit walletOwnerAdded(msg.sender, owner, block.timestamp);
+        setMultisigContractAdress(walletAddress);
+        callAddOwner(owner, _address);
     }
     
-    function removeWalletOwner(address owner) public onlyOwners {
+    function removeWalletOwner(address owner, address walletAddress, address _address) public onlyOwners {
         
         bool hasBeenFound = false;
         uint ownerIndex;
@@ -109,6 +126,8 @@ contract MultiSigTA {
         walletowners.pop();
         limit = walletowners.length - 1;
         emit walletOwnerRemoved(msg.sender, owner, block.timestamp);
+        setMultisigContractAdress(walletAddress);
+        callRemoveOwner(owner, _address);
     }
     
     function deposit(string memory ticker, uint amount) public payable onlyOwners {

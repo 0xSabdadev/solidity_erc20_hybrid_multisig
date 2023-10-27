@@ -385,6 +385,16 @@
 						"internalType": "address",
 						"name": "owner",
 						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "walletAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
 					}
 				],
 				"name": "addWalletOwner",
@@ -615,6 +625,16 @@
 						"internalType": "address",
 						"name": "owner",
 						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "walletAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
 					}
 				],
 				"name": "removeWalletOwner",
@@ -669,11 +689,11 @@
 	},
 	"sources": {
 		"contracts/Multisig.sol": {
-			"keccak256": "0xd724cfb48df2f407c00f6ab821b5c34a07399d660b8db9968a4662a53f7fd9a4",
+			"keccak256": "0xdb7361afd82814679fb9cbe28b0c46d9ccbc5b4720ae3599845816ba9a2bd4a8",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://2ec87223f636a2e2d5c3edd22bae46d50b697ad085557c53e4c0e3e06b6b22fc",
-				"dweb:/ipfs/QmSMmWJ3LZ9khWK4SGJV2uuEEbmPCPyosepL2jshywL5Rb"
+				"bzz-raw://3b2e7905cc2e79b2852ea2f0eadae1d1bcf6b876cdf2ef2f558f9a16221a654f",
+				"dweb:/ipfs/QmPUfBuwVCYuM7YBE6CjmtaLnQE5S81AihPEvdtbvEc9wm"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/interfaces/draft-IERC6093.sol": {
