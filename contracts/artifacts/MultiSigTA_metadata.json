@@ -669,11 +669,11 @@
 	},
 	"sources": {
 		"contracts/Multisig.sol": {
-			"keccak256": "0x7890accf841c6eda4878626e952d5b837fda6d4c907dced2c3ab3c50b0e14599",
+			"keccak256": "0xd724cfb48df2f407c00f6ab821b5c34a07399d660b8db9968a4662a53f7fd9a4",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://9132f95b5331b7e7506d7a0c7c8dfa81ce93a5dfa8da444d30a90761c95689fa",
-				"dweb:/ipfs/QmZ5tb8uY4XbJ8q3ySywhkLDyZhgo1Mn989hE53VsypA7S"
+				"bzz-raw://2ec87223f636a2e2d5c3edd22bae46d50b697ad085557c53e4c0e3e06b6b22fc",
+				"dweb:/ipfs/QmSMmWJ3LZ9khWK4SGJV2uuEEbmPCPyosepL2jshywL5Rb"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/interfaces/draft-IERC6093.sol": {

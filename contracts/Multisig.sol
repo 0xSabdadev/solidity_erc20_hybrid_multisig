@@ -61,22 +61,22 @@ contract MultiSigTA {
                break;
            }
        }
-       require(isOwner == true, "only wallet owners can call this function");
+       require(isOwner == true, "hanya wallet owners yang bisa memanggil function ini");
        _;
     }
     
     modifier tokenExists(string memory ticker) {
         if(keccak256((bytes(ticker))) != keccak256(bytes("ETH"))){
-            require(tokenMapping[ticker].tokenAddress != address(0), "token does not exixts");
+            require(tokenMapping[ticker].tokenAddress != address(0), "token tidak tersedia");
         }
         _;
     }
     
     function addToken(string memory ticker, address _tokenAddress) public onlyOwners {
         for (uint i = 0; i < tokenList.length; i++) {
-            require(keccak256(bytes(tokenList[i])) != keccak256(bytes(ticker)), "cannot add duplicate tokens");
+            require(keccak256(bytes(tokenList[i])) != keccak256(bytes(ticker)), "tidak dapat add tokens duplikat");
         }
-        require(keccak256(bytes(ERC20(_tokenAddress).symbol())) == keccak256(bytes(ticker)),"token not available on ERC20");
+        require(keccak256(bytes(ERC20(_tokenAddress).symbol())) == keccak256(bytes(ticker)),"token tidak tersedia pada ERC20");
         tokenMapping[ticker] = Token(ticker, _tokenAddress);
         tokenList.push(ticker);
         emit tokenAdded(msg.sender, ticker, _tokenAddress, block.timestamp);
@@ -104,7 +104,7 @@ contract MultiSigTA {
                 break;
             }
         }
-        require(hasBeenFound == true, "wallet owner not detected");
+        require(hasBeenFound == true, "wallet owner tidak terdetect");
         walletowners[ownerIndex] = walletowners[walletowners.length - 1];
         walletowners.pop();
         limit = walletowners.length - 1;
@@ -112,11 +112,11 @@ contract MultiSigTA {
     }
     
     function deposit(string memory ticker, uint amount) public payable onlyOwners {
-        require(balance[msg.sender][ticker] >= 0, "cannot deposit a value of 0");
+        require(balance[msg.sender][ticker] >= 0, "tidak dapat deposit value 0");
         if(keccak256(bytes(ticker)) == keccak256(bytes("ETH"))) {
             balance[msg.sender]["ETH"] += msg.value;
         }else {
-            require(tokenMapping[ticker].tokenAddress != address(0), "token does not exixts");
+            require(tokenMapping[ticker].tokenAddress != address(0), "token tidak tersedia");
             balance[msg.sender][ticker] += amount;
             IERC20(tokenMapping[ticker].tokenAddress).transferFrom(msg.sender, address(this), amount);
         }
@@ -125,12 +125,12 @@ contract MultiSigTA {
     } 
     
     function withdraw(string memory ticker, uint amount) public onlyOwners {
-        require(balance[msg.sender][ticker] >= amount,"insuffient balance");
+        require(balance[msg.sender][ticker] >= amount,"balance tidak cukup");
         balance[msg.sender][ticker] -= amount;
         if(keccak256(bytes(ticker)) == keccak256(bytes("ETH"))) {
             payable(msg.sender).transfer(amount);
         }else {
-            require(tokenMapping[ticker].tokenAddress != address(0), "token does not exixts");
+            require(tokenMapping[ticker].tokenAddress != address(0), "token tidak tersedia");
             IERC20(tokenMapping[ticker].tokenAddress).transfer(msg.sender, amount);
         }
         emit fundsWithdrawed(ticker, msg.sender, amount, withdrawalId, block.timestamp);
@@ -138,9 +138,9 @@ contract MultiSigTA {
     }
     // NOTE : TokenExiz Hndle
     function createTransferRequest(string memory ticker, address payable receiver, uint amount) public onlyOwners tokenExists(ticker){
-        require(balance[msg.sender][ticker] >= amount, "insufficent funds to create a transfer");
+        require(balance[msg.sender][ticker] >= amount, "funds tidak cukup untuk create transfer");
         for (uint i = 0; i < walletowners.length; i++) {
-            require(walletowners[i] != receiver, "cannot transfer funds within the wallet");
+            require(walletowners[i] != receiver, "tidak bisa transfer funds pada wallet pribadi");
         }
         balance[msg.sender][ticker] -= amount;
         transferRequests.push(Transfer(ticker, msg.sender, receiver, amount, transferId, 0, block.timestamp));
@@ -160,8 +160,8 @@ contract MultiSigTA {
              transferIndex++;
         }
         
-        require(transferRequests[transferIndex].sender == msg.sender, "only the transfer creator can cancel");
-        require(hasBeenFound, "transfer request does not exist");
+        require(transferRequests[transferIndex].sender == msg.sender, "hanya transfer creator yang dapat cancel");
+        require(hasBeenFound, "transfer request tidak tersedia");
         
         balance[msg.sender][ticker] += transferRequests[transferIndex].amount;
         transferRequests[transferIndex] = transferRequests[transferRequests.length - 1];
@@ -182,9 +182,9 @@ contract MultiSigTA {
              transferIndex++;
         }
         
-        require(hasBeenFound, "only the transfer creator can cancel");
-        require(approvals[msg.sender][id] == false, "cannot approve the same transfer twice");
-        require(transferRequests[transferIndex].sender != msg.sender, "cannot approve own transaction");
+        require(hasBeenFound, "hanya transfer creator yang dapat cancel");
+        require(approvals[msg.sender][id] == false, "tidak dapat approve pada transaksi transfer kedua kalinya");
+        require(transferRequests[transferIndex].sender != msg.sender, "tidak dapat approve pada transaction pribadi");
         
         approvals[msg.sender][id] = true;
         transferRequests[transferIndex].approvals++;
@@ -237,5 +237,52 @@ contract MultiSigTA {
         return tokenList;
     }
     
+}
+
+contract MultiSigFactory{
+
+    struct UserWallets{
+        address walletAdress;
+    }
+
+    UserWallets[] userWallets;
+    MultiSigTA[] multisigWalletInstances;
+
+    mapping(address => UserWallets[]) ownersWallets;
+
+    event walletCreated(address createdBy, address newWalletContractAddress, uint timeOfTransaction);
+
+    function createNewWallet() public{
+        MultiSigTA newMultisigWalletContract = new MultiSigTA();
+        multisigWalletInstances.push(newMultisigWalletContract);
+        UserWallets[] storage newWallet = ownersWallets[msg.sender];
+        newWallet.push(UserWallets(address(newMultisigWalletContract)));
+
+        emit walletCreated(msg.sender, address(newMultisigWalletContract), block.timestamp);
+    }
+
+    function addNewWalletInstance(address owner, address walletAddress) public{
+        UserWallets[] storage newWallet = ownersWallets[owner];
+        newWallet.push(UserWallets(walletAddress));
+    }
+    function removeNewWalletInstance(address _owner, address _walletAddress) public{
+        UserWallets[] storage newWallet = ownersWallets[_owner];
+        bool hasBeenFound = false;
+        uint walletIndex;
+        for (uint i = 0; i < newWallet.length; i++) {
+            if(newWallet[i].walletAdress == _walletAddress) {
+                hasBeenFound = true;
+                walletIndex = i;
+                break;
+            }
+        }
+        require(hasBeenFound == true, "wallet owner tidak terdetect");
+        newWallet[walletIndex] = newWallet[newWallet.length - 1];
+        newWallet.pop();
+    }
+
+    function getOwnerWallets(address owner) public view returns(UserWallets[] memory){
+        return ownersWallets[owner];
+    }
     
 }

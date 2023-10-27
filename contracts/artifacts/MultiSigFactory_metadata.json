@@ -27,7 +27,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "WalletCreated",
+				"name": "walletCreated",
 				"type": "event"
 			},
 			{
@@ -69,7 +69,7 @@
 						"components": [
 							{
 								"internalType": "address",
-								"name": "walletAddress",
+								"name": "walletAdress",
 								"type": "address"
 							}
 						],
@@ -128,11 +128,11 @@
 	},
 	"sources": {
 		"contracts/Multisig.sol": {
-			"keccak256": "0xd4ca1c7c173f1259b1d4b8e45a025aab4be6b6c0a13180f40dff15d35d673797",
+			"keccak256": "0xd724cfb48df2f407c00f6ab821b5c34a07399d660b8db9968a4662a53f7fd9a4",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://5644d0a23eeb92d90a652418e804552fd0fcd53d26b3acc19fb9f7f7c561f456",
-				"dweb:/ipfs/QmVLXottzkBkpJiKptrXzXRAJcfH2ZLwZMKGWNvBfanZbC"
+				"bzz-raw://2ec87223f636a2e2d5c3edd22bae46d50b697ad085557c53e4c0e3e06b6b22fc",
+				"dweb:/ipfs/QmSMmWJ3LZ9khWK4SGJV2uuEEbmPCPyosepL2jshywL5Rb"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/interfaces/draft-IERC6093.sol": {
