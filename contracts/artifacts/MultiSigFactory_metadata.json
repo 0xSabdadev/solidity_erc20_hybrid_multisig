@@ -113,7 +113,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Multisig.sol": "MultiSigFactory"
+			"contracts/MultiSigFactory.sol": "MultiSigFactory"
 		},
 		"evmVersion": "shanghai",
 		"libraries": {},
@@ -121,18 +121,26 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Multisig.sol": {
-			"keccak256": "0xdb7361afd82814679fb9cbe28b0c46d9ccbc5b4720ae3599845816ba9a2bd4a8",
+		"contracts/MultiSigFactory.sol": {
+			"keccak256": "0x1c0375820ab97f39d9a3d8739ac6f7e22520e3237001fef0fe273fc16ee608dc",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://3b2e7905cc2e79b2852ea2f0eadae1d1bcf6b876cdf2ef2f558f9a16221a654f",
-				"dweb:/ipfs/QmPUfBuwVCYuM7YBE6CjmtaLnQE5S81AihPEvdtbvEc9wm"
+				"bzz-raw://16960d55fa2aae7bcda3cac8839d825835e3c42377cb12d007b03e28815f0cca",
+				"dweb:/ipfs/QmVaTTn7drpxaLiCK9ChyuYS495DBEZ1y1Nt2yhLLgXLgS"
+			]
+		},
+		"contracts/Multisig.sol": {
+			"keccak256": "0x00349831d29649bfcccaa0cfd4c8fe0e0f56c7f294b1d320f0a6fb2b169f775b",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://40ab56c9af16a689bd96175c3fdf04b5b75beea998998464294a2c05de1141f8",
+				"dweb:/ipfs/Qmf434aW6uMiqn9VQYKFbvXnB64R6ivpb73R9YcfmyJizr"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/interfaces/draft-IERC6093.sol": {

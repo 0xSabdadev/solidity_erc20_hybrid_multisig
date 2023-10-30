@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
+import "./MultiSigFactory.sol";
 
 contract MultiSigTA {
     
@@ -15,17 +16,23 @@ contract MultiSigTA {
     uint withdrawalId = 0;
     uint transferId = 0;
     string[] tokenList;
+    bool private locked;
     
     constructor() {
         mainOwner = msg.sender;
         walletowners.push(mainOwner);
         limit = walletowners.length - 1;
         tokenList.push("ETH");
+        locked = false;
     }
     
     mapping(address => mapping(string => uint)) balance;
     mapping(address => mapping(uint => bool)) approvals;
+    mapping(address => bool) withdrawing;
+    mapping(address => bool) public withdrawalInProcess;
     mapping(string => Token) tokenMapping;
+    mapping(address => uint) public balancesToWithdraw;
+    mapping(address => string) public tickerToWithdraw;
     
     struct Token {
         string ticker;
@@ -73,6 +80,13 @@ contract MultiSigTA {
         _;
     }
     
+    modifier mutexApplied() {
+        require(!locked, "Reentrancy guard: locked");
+        locked = true;
+        _;
+        locked = false;
+    }
+
     function addToken(string memory ticker, address _tokenAddress) public onlyOwners {
         for (uint i = 0; i < tokenList.length; i++) {
             require(keccak256(bytes(tokenList[i])) != keccak256(bytes(ticker)), "tidak dapat add tokens duplikat");
@@ -111,7 +125,6 @@ contract MultiSigTA {
     }
     
     function removeWalletOwner(address owner, address walletAddress, address _address) public onlyOwners {
-        
         bool hasBeenFound = false;
         uint ownerIndex;
         for (uint i = 0; i < walletowners.length; i++) {
@@ -130,29 +143,56 @@ contract MultiSigTA {
         callRemoveOwner(owner, _address);
     }
     
-    function deposit(string memory ticker, uint amount) public payable onlyOwners {
+    function deposit(string memory ticker, uint amount) public payable onlyOwners mutexApplied{
         require(balance[msg.sender][ticker] >= 0, "tidak dapat deposit value 0");
+        require(!withdrawing[msg.sender], "proses sedang berlangsung");
+        withdrawing[msg.sender] = true;
         if(keccak256(bytes(ticker)) == keccak256(bytes("ETH"))) {
             balance[msg.sender]["ETH"] += msg.value;
         }else {
             require(tokenMapping[ticker].tokenAddress != address(0), "token tidak tersedia");
+            bool transferSuccess = IERC20(tokenMapping[ticker].tokenAddress).transferFrom(msg.sender, address(this), amount);
+            require(transferSuccess, "ERC20 transfer failed");
             balance[msg.sender][ticker] += amount;
-            IERC20(tokenMapping[ticker].tokenAddress).transferFrom(msg.sender, address(this), amount);
         }
         emit fundsDeposited(ticker, msg.sender, msg.value, depositId, block.timestamp);
+        withdrawing[msg.sender] = false;
         depositId++;
     } 
     
-    function withdraw(string memory ticker, uint amount) public onlyOwners {
-        require(balance[msg.sender][ticker] >= amount,"balance tidak cukup");
-        balance[msg.sender][ticker] -= amount;
+    function initiateWithdrawal(string memory ticker, uint _amount) public onlyOwners {
+        require(_amount > 0, "Amount must be greater than 0");
+        require(balance[msg.sender][ticker] >= _amount,"balance tidak cukup");
+        require(!withdrawalInProcess[msg.sender], "Withdrawal request in process");
+        if(keccak256(bytes(ticker)) != keccak256(bytes("ETH"))) {
+            require(tokenMapping[ticker].tokenAddress != address(0), "token tidak tersedia");
+        }
+        balancesToWithdraw[msg.sender] = _amount;
+        tickerToWithdraw[msg.sender] = ticker;
+        withdrawalInProcess[msg.sender] = true;
+    }
+
+    function withdraw() public onlyOwners mutexApplied{
+        require(withdrawalInProcess[msg.sender], "Tidak ada withdrawal request");
+        require(!withdrawing[msg.sender], "proses sedang berlangsung");
+        withdrawing[msg.sender] = true;
+        bool transferSuccess = false;
+        uint amount = balancesToWithdraw[msg.sender];
+        string memory ticker = tickerToWithdraw[msg.sender];
+        balancesToWithdraw[msg.sender] = 0;
+        tickerToWithdraw[msg.sender] = "";
+        withdrawalInProcess[msg.sender] = false;
         if(keccak256(bytes(ticker)) == keccak256(bytes("ETH"))) {
-            payable(msg.sender).transfer(amount);
+            // payable(msg.sender).transfer(amount);
+            (transferSuccess,) = payable(msg.sender).call{value: amount}("");
         }else {
             require(tokenMapping[ticker].tokenAddress != address(0), "token tidak tersedia");
-            IERC20(tokenMapping[ticker].tokenAddress).transfer(msg.sender, amount);
+            transferSuccess = IERC20(tokenMapping[ticker].tokenAddress).transfer(msg.sender, amount);
         }
+        require(transferSuccess, "ERC20 transfer failed");
+        balance[msg.sender][ticker] -= amount;
         emit fundsWithdrawed(ticker, msg.sender, amount, withdrawalId, block.timestamp);
+        withdrawing[msg.sender] = false;
         withdrawalId++;
     }
     // NOTE : TokenExiz Hndle
@@ -189,7 +229,6 @@ contract MultiSigTA {
     }
     
     function approveTransferRequest( string memory ticker, uint id) public onlyOwners {
-        
         // string memory ticker = transferRequests[id].ticker;
         bool hasBeenFound = false;
         uint transferIndex = 0;
@@ -214,21 +253,26 @@ contract MultiSigTA {
         }
     }
     
-    function transferFunds(string memory ticker, uint id) private {
-        
+    function transferFunds(string memory ticker, uint id) private mutexApplied{
+        require(!withdrawing[msg.sender], "proses sedang berlangsung");
+        withdrawing[msg.sender] = true;
+        bool transferSuccess = false;
         balance[transferRequests[id].receiver][ticker] += transferRequests[id].amount;
         if(keccak256(bytes(ticker)) == keccak256(bytes("ETH"))) {
-            transferRequests[id].receiver.transfer(transferRequests[id].amount);
+            // transferRequests[id].receiver.transfer(transferRequests[id].amount);
+            (transferSuccess,) = transferRequests[id].receiver.call{value: transferRequests[id].amount}("");
         }
         else {
-            IERC20(tokenMapping[ticker].tokenAddress).transfer(transferRequests[id].receiver, transferRequests[id].amount);
+            transferSuccess = IERC20(tokenMapping[ticker].tokenAddress).transfer(transferRequests[id].receiver, transferRequests[id].amount);
         }
+        require(transferSuccess, "ERC20 transfer failed");
         emit fundsTransfered(ticker, msg.sender, transferRequests[id].receiver, transferRequests[id].amount, transferRequests[id].id, transferRequests[id].approvals, transferRequests[id].timeOfTransaction);
+        withdrawing[msg.sender] = false;
         transferRequests[id] = transferRequests[transferRequests.length - 1];
         transferRequests.pop();
     }
     
-    function getApprovals(uint id) public view returns(bool) {
+    function getApprovals(uint id) public onlyOwners view returns(bool) {
         return approvals[msg.sender][id];
     }
     
@@ -240,7 +284,7 @@ contract MultiSigTA {
         return balance[msg.sender][ticker];
     }
     
-    function getApprovalLimit() public view returns (uint) {
+    function getApprovalLimit() public onlyOwners view returns (uint) {
         return limit;
     }
     
@@ -248,60 +292,12 @@ contract MultiSigTA {
         return address(this).balance;
     }
     
-    function getWalletOwners() public view returns(address[] memory) {
+    function getWalletOwners() public view onlyOwners returns(address[] memory) {
         return walletowners;
     }
    
     function getTokenList() public view returns(string[] memory){
         return tokenList;
-    }
-    
-}
-
-contract MultiSigFactory{
-
-    struct UserWallets{
-        address walletAdress;
-    }
-
-    UserWallets[] userWallets;
-    MultiSigTA[] multisigWalletInstances;
-
-    mapping(address => UserWallets[]) ownersWallets;
-
-    event walletCreated(address createdBy, address newWalletContractAddress, uint timeOfTransaction);
-
-    function createNewWallet() public{
-        MultiSigTA newMultisigWalletContract = new MultiSigTA();
-        multisigWalletInstances.push(newMultisigWalletContract);
-        UserWallets[] storage newWallet = ownersWallets[msg.sender];
-        newWallet.push(UserWallets(address(newMultisigWalletContract)));
-
-        emit walletCreated(msg.sender, address(newMultisigWalletContract), block.timestamp);
-    }
-
-    function addNewWalletInstance(address owner, address walletAddress) public{
-        UserWallets[] storage newWallet = ownersWallets[owner];
-        newWallet.push(UserWallets(walletAddress));
-    }
-    function removeNewWalletInstance(address _owner, address _walletAddress) public{
-        UserWallets[] storage newWallet = ownersWallets[_owner];
-        bool hasBeenFound = false;
-        uint walletIndex;
-        for (uint i = 0; i < newWallet.length; i++) {
-            if(newWallet[i].walletAdress == _walletAddress) {
-                hasBeenFound = true;
-                walletIndex = i;
-                break;
-            }
-        }
-        require(hasBeenFound == true, "wallet owner tidak terdetect");
-        newWallet[walletIndex] = newWallet[newWallet.length - 1];
-        newWallet.pop();
-    }
-
-    function getOwnerWallets(address owner) public view returns(UserWallets[] memory){
-        return ownersWallets[owner];
     }
     
 }

@@ -423,6 +423,25 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "balancesToWithdraw",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "string",
 						"name": "ticker",
 						"type": "string"
@@ -622,6 +641,24 @@
 			{
 				"inputs": [
 					{
+						"internalType": "string",
+						"name": "ticker",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "initiateWithdrawal",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "owner",
 						"type": "address"
@@ -645,19 +682,46 @@
 			{
 				"inputs": [
 					{
-						"internalType": "string",
-						"name": "ticker",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
+						"internalType": "address",
+						"name": "",
+						"type": "address"
 					}
 				],
+				"name": "tickerToWithdraw",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "withdraw",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "withdrawalInProcess",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			}
 		],
@@ -682,18 +746,26 @@
 			"bytecodeHash": "ipfs"
 		},
 		"optimizer": {
-			"enabled": false,
+			"enabled": true,
 			"runs": 200
 		},
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Multisig.sol": {
-			"keccak256": "0xdb7361afd82814679fb9cbe28b0c46d9ccbc5b4720ae3599845816ba9a2bd4a8",
+		"contracts/MultiSigFactory.sol": {
+			"keccak256": "0x1c0375820ab97f39d9a3d8739ac6f7e22520e3237001fef0fe273fc16ee608dc",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://3b2e7905cc2e79b2852ea2f0eadae1d1bcf6b876cdf2ef2f558f9a16221a654f",
-				"dweb:/ipfs/QmPUfBuwVCYuM7YBE6CjmtaLnQE5S81AihPEvdtbvEc9wm"
+				"bzz-raw://16960d55fa2aae7bcda3cac8839d825835e3c42377cb12d007b03e28815f0cca",
+				"dweb:/ipfs/QmVaTTn7drpxaLiCK9ChyuYS495DBEZ1y1Nt2yhLLgXLgS"
+			]
+		},
+		"contracts/Multisig.sol": {
+			"keccak256": "0xf739651d1e3980fb1f28e67f5ffa7ab5de8dcd41da60114435950bd0dd3ea1a8",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://c50d9ce0a98d2fa1be3a8371af1a0aa274eb195efb80ed1b0a7fb1dd5319bb83",
+				"dweb:/ipfs/QmTDEsioZnqYrFG6ddXjMrkKsxwZBdk7ftBWRiVvbG5ohz"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/interfaces/draft-IERC6093.sol": {
