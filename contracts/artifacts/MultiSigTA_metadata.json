@@ -753,11 +753,11 @@
 	},
 	"sources": {
 		"contracts/MultiSigFactory.sol": {
-			"keccak256": "0x1c0375820ab97f39d9a3d8739ac6f7e22520e3237001fef0fe273fc16ee608dc",
+			"keccak256": "0x9d0c141b27c1bcb0b58efb167d8901c4ad8eeada985be1d494a3b0779c0b4934",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://16960d55fa2aae7bcda3cac8839d825835e3c42377cb12d007b03e28815f0cca",
-				"dweb:/ipfs/QmVaTTn7drpxaLiCK9ChyuYS495DBEZ1y1Nt2yhLLgXLgS"
+				"bzz-raw://37c7afc4a0974d943cd703a3eedd578d674d90bae5a7077a806e1dcf5afa5ba5",
+				"dweb:/ipfs/QmR1tgtdyNxjKHzaqmkeCBK2KyVVEfPKak4ZTkojkhzFQH"
 			]
 		},
 		"contracts/Multisig.sol": {

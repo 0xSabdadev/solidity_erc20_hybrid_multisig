@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.22+commit.4fc1097e"
+		"version": "0.8.15+commit.e14f2714"
 	},
 	"language": "Solidity",
 	"output": {
@@ -115,7 +115,7 @@
 		"compilationTarget": {
 			"contracts/MultiSigFactory.sol": "MultiSigFactory"
 		},
-		"evmVersion": "shanghai",
+		"evmVersion": "london",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -128,59 +128,51 @@
 	},
 	"sources": {
 		"contracts/MultiSigFactory.sol": {
-			"keccak256": "0x1c0375820ab97f39d9a3d8739ac6f7e22520e3237001fef0fe273fc16ee608dc",
+			"keccak256": "0x9d0c141b27c1bcb0b58efb167d8901c4ad8eeada985be1d494a3b0779c0b4934",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://16960d55fa2aae7bcda3cac8839d825835e3c42377cb12d007b03e28815f0cca",
-				"dweb:/ipfs/QmVaTTn7drpxaLiCK9ChyuYS495DBEZ1y1Nt2yhLLgXLgS"
+				"bzz-raw://37c7afc4a0974d943cd703a3eedd578d674d90bae5a7077a806e1dcf5afa5ba5",
+				"dweb:/ipfs/QmR1tgtdyNxjKHzaqmkeCBK2KyVVEfPKak4ZTkojkhzFQH"
 			]
 		},
 		"contracts/Multisig.sol": {
-			"keccak256": "0x00349831d29649bfcccaa0cfd4c8fe0e0f56c7f294b1d320f0a6fb2b169f775b",
+			"keccak256": "0x386599c01faedf756f0942a8c78579865de87f79fe4d0695dbff1784d5f90f8b",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://40ab56c9af16a689bd96175c3fdf04b5b75beea998998464294a2c05de1141f8",
-				"dweb:/ipfs/Qmf434aW6uMiqn9VQYKFbvXnB64R6ivpb73R9YcfmyJizr"
+				"bzz-raw://edb3071798aa3f808165d917f06a4c47db4254652df14ec68a07fa9f72d45be1",
+				"dweb:/ipfs/QmX8MQ1BTxdSdFX7BVPTzh3i5f96wV5kRTBmspur1gHdAd"
 			]
 		},
-		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/interfaces/draft-IERC6093.sol": {
-			"keccak256": "0x60c65f701957fdd6faea1acb0bb45825791d473693ed9ecb34726fdfaa849dd7",
+		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.9.3/contracts/token/ERC20/ERC20.sol": {
+			"keccak256": "0xa56ca923f70c1748830700250b19c61b70db9a683516dc5e216694a50445d99c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://ea290300e0efc4d901244949dc4d877fd46e6c5e43dc2b26620e8efab3ab803f",
-				"dweb:/ipfs/QmcLLJppxKeJWqHxE2CUkcfhuRTgHSn8J4kijcLa5MYhSt"
+				"bzz-raw://cac938788bc4be12101e59d45588b4e059579f4e61062e1cda8d6b06c0191b15",
+				"dweb:/ipfs/QmV2JKCyjTVH3rkWNrfdJRhAT7tZ3usAN2XcnD4h53Mvih"
 			]
 		},
-		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol": {
-			"keccak256": "0xc3e1fa9d1987f8d349dfb4d6fe93bf2ca014b52ba335cfac30bfe71e357e6f80",
+		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.9.3/contracts/token/ERC20/IERC20.sol": {
+			"keccak256": "0x287b55befed2961a7eabd7d7b1b2839cbca8a5b80ef8dcbb25ed3d4c2002c305",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c5703ccdeb7b1d685e375ed719117e9edf2ab4bc544f24f23b0d50ec82257229",
-				"dweb:/ipfs/QmTdwkbQq7owpCiyuzE7eh5LrD2ddrBCZ5WHVsWPi1RrTS"
+				"bzz-raw://bd39944e8fc06be6dbe2dd1d8449b5336e23c6a7ba3e8e9ae5ae0f37f35283f5",
+				"dweb:/ipfs/QmPV3FGYjVwvKSgAXKUN3r9T9GwniZz83CxBpM7vyj2G53"
 			]
 		},
-		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol": {
-			"keccak256": "0xc6a8ff0ea489379b61faa647490411b80102578440ab9d84e9a957cc12164e70",
+		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.9.3/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
+			"keccak256": "0x8de418a5503946cabe331f35fe242d3201a73f67f77aaeb7110acb1f30423aca",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0ea104e577e63faea3b69c415637e99e755dcbf64c5833d7140c35a714d6d90c",
-				"dweb:/ipfs/Qmau6x4Ns9XdyynRCNNp3RhLqijJjFm7z5fyZazfYFGYdq"
+				"bzz-raw://5a376d3dda2cb70536c0a45c208b29b34ac560c4cb4f513a42079f96ba47d2dd",
+				"dweb:/ipfs/QmZQg6gn1sUpM8wHzwNvSnihumUCAhxD119MpXeKp8B9s8"
 			]
 		},
-		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
-			"keccak256": "0xaa761817f6cd7892fcf158b3c776b34551cde36f48ff9703d53898bc45a94ea2",
+		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.9.3/contracts/utils/Context.sol": {
+			"keccak256": "0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0ad7c8d4d08938c8dfc43d75a148863fb324b80cf53e0a36f7e5a4ac29008850",
-				"dweb:/ipfs/QmcrhfPgVNf5mkdhQvy1pMv51TFokD3Y4Wa5WZhFqVh8UV"
-			]
-		},
-		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Context.sol": {
-			"keccak256": "0x75a4ee64c68dbd5f38bddd06e664a64c8271b4caa554fb6f0607dfd672bb4bf3",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://0c4e6cb30d3601e2f7af5af09e265508147cb275a8dcd99d6f7363645cc56867",
-				"dweb:/ipfs/QmNgFkoXNWoUbAyw71rr1sKQ95Rj2GfvYiWg79xEYDn2NY"
+				"bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92",
+				"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3"
 			]
 		}
 	},
