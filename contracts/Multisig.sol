@@ -33,6 +33,7 @@ contract MultiSigTA {
     mapping(string => Token) tokenMapping;
     mapping(address => uint) public balancesToWithdraw;
     mapping(address => string) public tickerToWithdraw;
+    uint8 constant MAX_OWNERS = 3;
     
     struct Token {
         string ticker;
@@ -112,11 +113,13 @@ contract MultiSigTA {
     }
 
     function addWalletOwner(address owner, address walletAddress, address _address) public onlyOwners {
-       for (uint i = 0; i < walletowners.length; i++) {
-           if(walletowners[i] == owner) {
-               revert("cannot add duplicate owners");
-           }
-       }
+        require(owner != msg.sender, "Cannot add yourself as wallet owner");
+        require(walletowners.length < MAX_OWNERS, "Maximum number of wallet owners reached");
+
+        for (uint i = 0; i < walletowners.length; i++) {
+            require(walletowners[i] != owner, "Cannot add duplicate owners");
+        }
+
         walletowners.push(owner);
         limit = walletowners.length - 1;
         emit walletOwnerAdded(msg.sender, owner, block.timestamp);
@@ -125,6 +128,9 @@ contract MultiSigTA {
     }
     
     function removeWalletOwner(address owner, address walletAddress, address _address) public onlyOwners {
+        require(owner != msg.sender, "Cannot remove yourself as wallet owner");
+        require(walletowners.length > 2, "Cannot remove owner: minimum number of owners required");
+        
         bool hasBeenFound = false;
         uint ownerIndex;
         for (uint i = 0; i < walletowners.length; i++) {
