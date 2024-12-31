@@ -114,6 +114,7 @@ contract MultiSigTA {
 
     function addWalletOwner(address owner, address walletAddress, address _address) public onlyOwners {
         require(owner != msg.sender, "Cannot add yourself as wallet owner");
+        
         require(walletowners.length < MAX_OWNERS, "Maximum number of wallet owners reached");
 
         for (uint i = 0; i < walletowners.length; i++) {
